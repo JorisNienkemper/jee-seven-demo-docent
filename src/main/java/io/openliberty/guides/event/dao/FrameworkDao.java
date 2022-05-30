@@ -3,7 +3,8 @@ package io.openliberty.guides.event.dao;
 
 import io.openliberty.guides.event.models.Framework;
 import io.openliberty.guides.event.resources.FrameworkResource;
-import javax.enterprise.context.RequestScoped;
+
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
@@ -12,13 +13,14 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
-@RequestScoped
+@Stateless
 public class FrameworkDao {
+
     private static Logger logger = LogManager.getLogger(FrameworkResource.class);
     @PersistenceContext(name = "jpa-unit")
     private EntityManager em;
 
-    @Transactional
+
     public void save(Framework framework){
         logger.debug("start save(framework) " + framework);
         em.persist(framework);
@@ -38,12 +40,12 @@ public class FrameworkDao {
         em.remove(framework1);
     }
 
-    public Framework getFrameworkByName(String name){
+    public List<Framework> getFrameworkByName(String name){
 
         String jpqlString ="SELECT f FROM Framework f WHERE f.name=:name";
         return em.createQuery(jpqlString,Framework.class)
                 .setParameter("name",name)
-                .getSingleResult();
+                .getResultList();
     }
 
     public List<Framework> getFrameworks() {

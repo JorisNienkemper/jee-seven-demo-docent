@@ -11,14 +11,16 @@
 package io.openliberty.guides.event.dao;
 
 import io.openliberty.guides.event.models.Event;
-import javax.enterprise.context.RequestScoped;
+
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import java.util.List;
 
-@RequestScoped
+@Stateless
 public class EventDao {
+
     @PersistenceContext(name = "jpa-unit")
     private EntityManager em;
     public void createEvent(Event event) {

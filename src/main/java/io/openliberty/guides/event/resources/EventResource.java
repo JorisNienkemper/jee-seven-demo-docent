@@ -13,6 +13,7 @@ package io.openliberty.guides.event.resources;
 import io.openliberty.guides.event.dao.EventDao;
 import io.openliberty.guides.event.models.Event;
 
+import javax.ejb.Stateless;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.*;
@@ -22,7 +23,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 
-@RequestScoped
+@Stateless
 @Path("events")
 public class EventResource {
 
@@ -31,7 +32,6 @@ public class EventResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Transactional
     public Response addNewEventWithJson(Event newEvent) {
 
         if (!eventDAO.findEvent(newEvent.getName(), newEvent.getLocation(), newEvent.getTime()).isEmpty()) {
@@ -47,7 +47,6 @@ public class EventResource {
     @PUT
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Transactional
     public Response updateEventWithJason(Event updatedEvent,
                                          @PathParam("id") int id) {
         Event prevEvent = eventDAO.readEvent(id);
@@ -69,7 +68,6 @@ public class EventResource {
      */
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Transactional
     public Response addNewEvent(@FormParam("name") String name,
                                 @FormParam("time") String time, @FormParam("location") String location) {
         Event newEvent = new Event(name, location, time);
@@ -89,7 +87,6 @@ public class EventResource {
     @PUT
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Transactional
     public Response updateEvent(@FormParam("name") String name,
                                 @FormParam("time") String time, @FormParam("location") String location,
                                 @PathParam("id") int id) {
@@ -115,7 +112,6 @@ public class EventResource {
      */
     @DELETE
     @Path("{id}")
-    @Transactional
     public Response deleteEvent(@PathParam("id") int id) {
         Event event = eventDAO.readEvent(id);
         if (event == null) {
@@ -132,7 +128,6 @@ public class EventResource {
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Transactional
     public JsonObject getEvent(@PathParam("id") int eventId) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         Event event = eventDAO.readEvent(eventId);
@@ -148,7 +143,6 @@ public class EventResource {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Transactional
     public JsonArray getEvents() {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         JsonArrayBuilder finalArray = Json.createArrayBuilder();
