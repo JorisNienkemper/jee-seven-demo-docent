@@ -4,7 +4,7 @@ package io.openliberty.guides.event.dao;
 import io.openliberty.guides.event.models.Framework;
 import io.openliberty.guides.event.resources.FrameworkResource;
 
-import javax.ejb.Stateless;
+import javax.ejb.*;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
@@ -14,19 +14,21 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 
 @Stateless
+@TransactionManagement(TransactionManagementType.CONTAINER)
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class FrameworkDao {
 
     private static Logger logger = LogManager.getLogger(FrameworkResource.class);
     @PersistenceContext(name = "jpa-unit")
     private EntityManager em;
 
-
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void save(Framework framework){
         logger.debug("start save(framework) " + framework);
         em.persist(framework);
         logger.debug("end save()");
     }
-
+    @TransactionAttribute(TransactionAttributeType.NEVER)
     public Framework getById(int id){
        return   em.find(Framework.class,id);
     }
